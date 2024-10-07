@@ -187,7 +187,7 @@ const verification_otp = async (req, res) => {
     const otpMatches =  foundUser.otp
 
     if (otpMatches != otp) {
-      return res.status(400).send({ message: 'Incorrect OTP. Please try again.' });
+      return res.status(400).send({ message: 'Incorrect OTP. Please try again..' });
     }
 
     const token = jwt.sign(foundUser.toJSON(), "ABC"); 

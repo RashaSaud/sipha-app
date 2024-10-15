@@ -5,20 +5,22 @@ const agenadModel = new mongoose.Schema({
  AgendaDayDetails:[
     {
         DayNumber:{ type: Number ,default:null},
+        agendaDate:{type:String},
         Regestration:{type:String},
         OpeningCeremony:{type:String},
-        PrayerBreak:{type:String}
+        PrayerBreak:{type:String},
+        sesstionNumber:{type:String}
 
 
     },
   
  ],
  sessionName:{type:String},
- sessionSpeakers: [{type: mongoose.Schema.Types.ObjectId, ref:'speakers_model'}],
- sessionPanelDiscussion: {type:String},
+ sessionSpeakers: [{type: mongoose.Schema.Types.ObjectId, ref:'speakers_model',require:false},],
+ sessionPanelDiscussion: {type:String}, 
  sessionTime:{type:String},
  sessionCaseStudy:{type:String},
- sessionCaseStudyTime:{type:String},
+ sessionCaseStudyTime:{type:String}, 
 
 
 });

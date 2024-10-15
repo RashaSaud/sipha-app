@@ -101,6 +101,10 @@ const fetchUserData = async () => {
       } else {
         const newUser = new userModel({
           email: user.username,
+          cv_fields:user.cv_fields,
+          first_name:user.first_name,
+          last_name:user.last_name
+
         });
 
         await newUser.save();
@@ -198,6 +202,7 @@ const verification_otp = async (req, res) => {
     console.error(error);
     return res.status(500).send({ message: error});
   }
+  
 };
 
 

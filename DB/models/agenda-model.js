@@ -16,7 +16,7 @@ const agenadModel = new mongoose.Schema({
   
  ],
  sessionName:{type:String},
- sessionSpeakers: [{type: mongoose.Schema.Types.ObjectId, ref:'speakers_model',require:false},],
+ sessionSpeakers: [{type: mongoose.Schema.Types.ObjectId, ref:'sessionsmoderators',require:false},],
  sessionPanelDiscussion: {type:String}, 
  sessionTime:{type:String},
  sessionCaseStudy:{type:String},
@@ -24,5 +24,6 @@ const agenadModel = new mongoose.Schema({
 
 
 });
+
 
 module.exports = mongoose.model("agenadModel", agenadModel);

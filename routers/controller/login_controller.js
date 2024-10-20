@@ -1,10 +1,10 @@
 const userModel = require("../../DB/models/users");
 const spekersModel = require("../../DB/models/speakers");
+const sessionsModerator = require('../../DB/models/session-moderator')
 const axios = require("axios");
 const scientific_committees = require("../../DB/models/education-committee");
 const jwt= require('jsonwebtoken')
-const nodemailer = require('nodemailer'); // Ensure Nodemailer is installed
-
+const nodemailer = require('nodemailer'); 
 const sendEmail = async (to, subject, message) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -132,6 +132,16 @@ const addSpeakers = async (req, res) => {
   res.status(200).send(newSpeaker);
 };
 
+
+const addSessionMod = async (req, res) => {
+  const { email, name, linkedinAcc, phoneNumber,isModerator} = req.body;
+  const add_sessionsModerator = new sessionsModerator({
+    email, name, linkedinAcc, phoneNumber,isModerator
+  });
+  const new_sessionsModerator = await add_sessionsModerator.save();
+  res.status(200).send(new_sessionsModerator);
+};
+
 const add_Scientific_committee = async (req, res) => {
   const { name, position, img, role } = req.body;
 
@@ -215,7 +225,8 @@ module.exports = {
   getAllUsers,
   getOneScientific,
   getOneUser,
-  verification_otp
+  verification_otp,
+  addSessionMod
 };
 
 

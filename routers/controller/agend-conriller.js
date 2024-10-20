@@ -1,4 +1,6 @@
 const agendaModel = require('../../DB/models/agenda-model')
+const sessionsmoderators = require('../../DB/models/session-moderator')
+const winston = require('winston'); 
 
 const add_agenda =async (req,res)=>{
 const {AgendaDayDetails,sessionName,sessionSpeakers,sessionPanelDiscussion,sessionTime,sessionCaseStudy,sessionCaseStudyTime} = req.body
@@ -25,6 +27,23 @@ res.status(200).send(getOne)
 res.status(404).send('Content is not avilable')
     }
 }
+const getSesstionSpeakers = async (req, res) => {
+    try {
+      const sessionSpeakers = req.params.sessionSpeakers.split(','); // Parse the comma-separated IDs
+  
+      // Validate sessionSpeakers parameter (optional)
+      if (!sessionSpeakers || !Array.isArray(sessionSpeakers) || sessionSpeakers.length === 0) {
+        throw new Error('Invalid sessionSpeakers parameter');
+      }
+  
+      const users = await sessionsmoderators.find({ _id: { $in: sessionSpeakers } });
+      res.json(users);
+    } catch (error) {
+        console.log(error);
+        
+      winston.error('Failed to fetch users:', error); // Log the error using winston
+      res.status(500).json({ error: 'Failed to fetch users' });
+    }
+  };
 
-
-module.exports={add_agenda,getAgenda,getOneAgenda}
+module.exports={add_agenda,getAgenda,getOneAgenda,getSesstionSpeakers}

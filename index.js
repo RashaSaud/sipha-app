@@ -19,7 +19,9 @@ app.use(logInRoute);
 app.use(workshopRoute)
 
 
-
+app.get('/',(req,res)=>{
+res.send('GGGG')
+})
 
 app.listen(8080,()=>{
     console.log("server is running");

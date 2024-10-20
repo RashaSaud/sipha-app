@@ -1,8 +1,10 @@
 const admin = require('firebase-admin');
+require('dotenv').config()
+
 const Notification = require('../../DB/models/notification-model');
 admin.initializeApp({
     credential: admin.credential.cert('routers/middeldware/sipha-app-310d3-firebase-adminsdk-pyjex-a64d460807.json'),
-    databaseURL: 'https://sipha-app-310d3-default-rtdb.firebaseio.com/'
+    databaseURL: process.env.databaseURL
   });
 
 

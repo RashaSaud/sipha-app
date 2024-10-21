@@ -31,7 +31,6 @@ const getSesstionSpeakers = async (req, res) => {
     try {
       const sessionSpeakers = req.params.sessionSpeakers.split(','); // Parse the comma-separated IDs
   
-      // Validate sessionSpeakers parameter (optional)
       if (!sessionSpeakers || !Array.isArray(sessionSpeakers) || sessionSpeakers.length === 0) {
         throw new Error('Invalid sessionSpeakers parameter');
       }
@@ -41,7 +40,7 @@ const getSesstionSpeakers = async (req, res) => {
     } catch (error) {
         console.log(error);
         
-      winston.error('Failed to fetch users:', error); // Log the error using winston
+      winston.error('Failed to fetch users:', error); 
       res.status(500).json({ error: 'Failed to fetch users' });
     }
   };

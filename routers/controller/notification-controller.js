@@ -50,7 +50,7 @@ admin.initializeApp({
         res.json({ message: 'Notifications sent' });
       } catch (err) {
         console.error('Error retrieving or sending notifications:', err);
-        res.status(500).json({ error: 'Failed to send notifications fffff' });
+        res.status(500).json({ error: 'Failed to send notifications ' });
       }
   }
 

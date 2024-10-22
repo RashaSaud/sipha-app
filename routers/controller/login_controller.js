@@ -156,12 +156,16 @@ const add_Scientific_committee = async (req, res) => {
   res.status(200).send(added);
 };
 
+// const getAll = async (req, res) => {
+//   const findRequest = await scientific_committees.find({});
+//   res.status(200).send(findRequest);
+  
+  
+// };
+
 const getAll = async (req, res) => {
-  const findRequest = await scientific_committees.find({});
-  res.status(200).send(findRequest);
-  
-  
-};
+  const findRequest = await scientific_committees.find({}).sort({ role: 1 });
+res.status(200).send(findRequest)};
 
 
 const getAllUsers = async(req,res)=>{

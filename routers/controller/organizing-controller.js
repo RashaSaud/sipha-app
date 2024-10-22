@@ -1,9 +1,9 @@
 const organizing_committees = require('../../DB/models/organizing-committee')
 const add_organizing = async (req,res)=>{
-    const {name,possition,img} = req.body 
+    const {img} = req.body 
     try{
         const addUser = new organizing_committees({
-         
+         img
           })
           const added = await addUser.save()
           res.status(200).send(added)

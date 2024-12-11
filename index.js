@@ -3,10 +3,12 @@
 process.noDeprecation = true;
 const express = require("express");
 const app = express();
+const cors = require('cors');
 
 const User = require('./DB/models/users')
 require("./DB/db");
 app.use(express.json());
+app.use(cors());
 
 
 
@@ -20,9 +22,6 @@ app.use(logInRoute);
 app.use(workshopRoute)
 app.use(orgRoute)
 
-app.get('/',(req,res)=>{
-res.send('GGGG')
-})
 
 app.listen(8080,()=>{
     console.log("server is running");

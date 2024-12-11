@@ -9,7 +9,7 @@ const workshops_model = new mongoose.Schema({
   workshopArea: { type: String },
   workshopTime: {type:String},
   whichDay:{type:Number},
-  speakers: {type: mongoose.Schema.Types.ObjectId, ref:'speakers_model'},
+  speakers: [{type: mongoose.Schema.Types.ObjectId, ref:'speakers_model'}],
 });
 
 module.exports = mongoose.model("workshops_model", workshops_model);

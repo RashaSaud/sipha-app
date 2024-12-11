@@ -1,5 +1,6 @@
 const agendaModel = require("../../DB/models/agenda-model");
 const sessionsmoderators = require("../../DB/models/session-moderator");
+const questions_model = require("../../DB/models/questions");
 const winston = require("winston");
 
 // const add_agenda =async (req,res)=>{
@@ -47,7 +48,7 @@ const add_agenda = async (req, res) => {
 
   try {
     const speakerDocuments = await sessionsmoderators.find({
-      _id: { $in: sessionSpeakers }, 
+      _id: { $in: sessionSpeakers },
     });
 
     if (speakerDocuments.length !== sessionSpeakers.length) {
@@ -65,7 +66,7 @@ const add_agenda = async (req, res) => {
     });
 
     const saved = await newAgendaItem.save();
-    res.status(201).send(saved); 
+    res.status(201).send(saved);
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: "Internal server error" });
@@ -109,5 +110,33 @@ const getSesstionSpeakers = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch users" });
   }
 };
+const askSpeakers = async (req, res) => {
+  const id = req.params.id;
+  const token = req.token._id;
+  const question = req.body.question;
+  const newQustion = new questions_model({
+    whoisAsk: token,
+    workshop: id,
+    question: question,
+  });
 
-module.exports = { add_agenda, getAgenda, getOneAgenda, getSesstionSpeakers };
+  const added = await newQustion.save();
+  res.status(200).send(added);
+};
+
+const getSesstionQuestionsById = async (req, res) => {
+  const id = req.params.id;
+  const getQus = await questions_model.find({
+    workshop: id,
+  });
+  res.status(200).send(getQus);
+};
+
+module.exports = {
+  add_agenda,
+  getAgenda,
+  getOneAgenda,
+  getSesstionSpeakers,
+  askSpeakers,
+  getSesstionQuestionsById,
+};

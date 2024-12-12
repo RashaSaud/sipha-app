@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: shipa
+  name: shipa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shipa
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: shipa
+    spec:
+      containers:
+      - image: ahmad75/sipha:TAAGG
+        name: shipa-app
+        imagePullPolicy: IfNotPresent
+        # resources:
+        #   requests:
+        #     memory: "200Mi"
+        #     cpu: "100m"
+        #   limits:
+        #     memory: "2Gi"
+        #     cpu: "1"
+        env:
+        - name: mongodb_url
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: mongodb_url
+        - name: database_url
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: database_url
+        - name: nodemailer_pass
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: nodemailer_pass
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /heath-check
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /heath-check
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      imagePullSecrets:
+      - name: my-registry-secret

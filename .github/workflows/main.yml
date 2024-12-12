@@ -1,0 +1,108 @@
+name: Build Docker Image
+
+# Trigger the workflow on push to main and pull request to main
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'k8s/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Docker Build 🐳
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the code from the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Set up Docker Buildx (for building multi-platform images)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Cache Docker layers to speed up build
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      # Build Docker image with a shorter tag (first 7 characters of the commit SHA)
+      - name: Build Docker image
+        run: |
+          IMAGE_TAG=1.0.${{ github.run_number }}
+          docker build -t ahmad75/sipha:$IMAGE_TAG .
+          
+      # Optionally, push the image to a registry (e.g., Docker Hub or GitHub Container Registry)
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Push Docker image
+        run: |
+          IMAGE_TAG=1.0.${{ github.run_number }}
+          docker push ahmad75/sipha:$IMAGE_TAG 
+
+  test:
+    name: Test Container 👀
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    
+      - name: Run Docker Container
+        run: |
+          IMAGE_TAG=1.0.${{ github.run_number }}
+          # IMAGE_TAG="a5a3900" 
+          docker login --username=${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin <<<"${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}"
+          docker run -d -p 8080:8080 -e mongodb_url="${{ secrets.MONGODB_URL }}" -e database_url="${{ secrets.DATABASE_URL }}" -e nodemailer_pass="${{ secrets.NODEMAILER_PASS }}" --name sipah ahmad75/sipha:$IMAGE_TAG
+          docker ps
+          sleep 10s
+          
+      - name: get logs
+        run: docker logs sipah
+
+      - name: Test Endpoint
+        run: |
+          curl localhost:8080/
+
+
+  debloy:
+    name: Deploy 🚀
+    runs-on: ubuntu-latest
+    needs: [build, test]
+
+    steps:
+      # Check out the code from the repository
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Update Image Tag
+        run: |
+          IMAGE_TAG=1.0.${{ github.run_number }}
+          sed -i "s/TAAGG/$IMAGE_TAG/" k8s/deployemnt.yaml
+    
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }} 
+        with:
+          args: apply -f k8s/deployemnt.yaml
+
+
+      # - name: Deploy on K8S
+      #   run: |
+      #     IMAGE_TAG=1.0.${{ github.run_number }}
+      #     echo ${{ secrets.KUBECONFIG }} > .kubeconfig
+      #     kubectl --kubeconfig .kubeconfig apply -f k8s/deployemnt.yaml
+
+

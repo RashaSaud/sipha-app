@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shipa
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: shipa.cloider.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: shipa
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - shipa.cloider.com

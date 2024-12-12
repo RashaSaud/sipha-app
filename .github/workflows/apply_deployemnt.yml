@@ -1,0 +1,61 @@
+name: Trigger on Specific Folder Only
+
+on:
+  push:
+    paths:
+      - 'k8s/**'
+  pull_request:
+    paths:
+      - 'k8s/**'
+
+jobs:
+  run-on-folder-change:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # - name: Run action only on specific folder changes
+      #   run: echo "Changes detected only in 'your-folder/'!"
+
+
+      # - uses: actions-hub/kubectl@master
+      #   env:
+      #     KUBE_CONFIG: ${{ secrets.KUBECONFIG }} 
+      #   with:
+      #     args: get deployment shipa -o=jsonpath='{.spec.template.spec.containers[0].image}'
+
+      - name: Get the deployment image tag
+        id: get_image_tag
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG }} 
+        with:
+          args: get deployment shipa -o=jsonpath='{.spec.template.spec.containers[0].image}'
+
+      # - name: Save image tag to variable
+      #   run: |
+      #     echo ${{ env.KUBE_CONFIG_PLAIN }}  > kubeconfig
+      #     IMAGE_TAG=$(kubectl --kubeconfig kubeconfig get deployment shipa -o=jsonpath='{.spec.template.spec.containers[0].image}')
+      #     echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      # - name: Print the image tag
+      #   run: echo "The image tag is ${{ env.IMAGE_TAG }}"
+
+
+      # Decode the base64 KUBECONFIG and save it to a file
+      - name: Decode Kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > /tmp/config
+        env:
+          KUBECONFIG_BASE64: ${{ secrets.KUBECONFIG }} # Add your base64 kubeconfig as a GitHub secret
+
+      # Set the KUBECONFIG environment variable to point to the decoded file
+      - name: Set KUBECONFIG environment variable
+        run: echo "KUBECONFIG=/tmp/config" >> $GITHUB_ENV
+
+      # Use kubectl with the decoded kubeconfig
+      - name: Run kubectl command
+        run: |
+          kubectl get deployment shipa -o=jsonpath='{.spec.template.spec.containers[0].image}'

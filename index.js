@@ -22,6 +22,17 @@ app.use(logInRoute);
 app.use(workshopRoute)
 app.use(orgRoute)
 
+app.get('/heath-check',(req,res)=>{
+    mongoose.connect(process.env.mongodb_url,{
+    }).then(
+      () => {
+        res.status(200).json({ message: "DB Connected" });
+      },
+      (err) => {
+        res.status(500).json({ message: "Error: DB Not Connected" });
+      }
+    );
+})
 
 app.listen(8080,()=>{
     console.log("server is running");

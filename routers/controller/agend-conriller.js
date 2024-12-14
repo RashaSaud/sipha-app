@@ -116,7 +116,7 @@ const askSpeakers = async (req, res) => {
   const question = req.body.question;
   const newQustion = new questions_model({
     whoisAsk: token,
-    workshop: id,
+    agenda: id,
     question: question,
   });
 

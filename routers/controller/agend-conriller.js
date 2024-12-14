@@ -135,7 +135,7 @@ const getSesstionQuestionsById = async (req, res) => {
 module.exports = {
   add_agenda,
   getAgenda,
-  getOneAgenda,
+  getOneAgenda, 
   getSesstionSpeakers,
   askSpeakers,
   getSesstionQuestionsById,

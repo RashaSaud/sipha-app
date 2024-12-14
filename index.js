@@ -19,7 +19,7 @@ const orgRoute = require('./routers/routes/organizing-route')
 app.use(logInRoute);
 
 
-app.use(workshopRoute)
+app.use(workshopRoute) 
 app.use(orgRoute)
 
 app.get('/heath-check',(req,res)=>{
@@ -32,7 +32,7 @@ app.get('/heath-check',(req,res)=>{
         res.status(500).json({ message: "Error: DB Not Connected" });
       }
     );
-})
+}) 
 
 app.listen(8080,()=>{
     console.log("server is running");

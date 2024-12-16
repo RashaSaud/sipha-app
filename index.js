@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 
-
+const mongoose = require("mongoose");
 
 const logInRoute  = require("./routers/routes/login_route");
 const workshopRoute = require('./routers/routes/workshop_routes')

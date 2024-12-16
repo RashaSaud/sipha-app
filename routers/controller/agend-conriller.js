@@ -121,13 +121,13 @@ const askSpeakers = async (req, res) => {
   });
 
   const added = await newQustion.save();
-  res.status(200).send(added);
+  res.status(200).send(added); 
 };
 
 const getSesstionQuestionsById = async (req, res) => {
   const id = req.params.id;
   const getQus = await questions_model.find({
-    workshop: id,
+    agenda: id,
   });
   res.status(200).send(getQus);
 };

@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
  
 
 
-mongoose.connect(process.env.mongodb_url,{
+mongoose.connect('mongodb+srv://SIPHATEAM:yej2jNnxKzsB3jRc@siphadb.ddprq.mongodb.net/?retryWrites=true&w=majority&appName=SIPHADB',{
 
 
 }).then(

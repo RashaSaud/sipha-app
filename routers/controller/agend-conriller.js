@@ -1,6 +1,7 @@
 const agendaModel = require("../../DB/models/agenda-model");
 const sessionsmoderators = require("../../DB/models/session-moderator");
 const questions_model = require("../../DB/models/questions");
+const user_moder = require('../../DB/models/users')
 const winston = require("winston");
 
 // const add_agenda =async (req,res)=>{
@@ -114,22 +115,29 @@ const askSpeakers = async (req, res) => {
   const id = req.params.id;
   const token = req.token._id;
   const question = req.body.question;
+ 
+
+
   const newQustion = new questions_model({
     whoisAsk: token,
     agenda: id,
     question: question,
   });
-
   const added = await newQustion.save();
-  res.status(200).send(added); 
+  res.status(200).send(added);
+
+  // res.status(200).send(added); 
 };
+
 
 const getSesstionQuestionsById = async (req, res) => {
   const id = req.params.id;
-  const getQus = await questions_model.find({
-    agenda: id,
-  });
-  res.status(200).send(getQus);
+
+  const populatedQuestions = await questions_model.find({ agenda: id })
+    .populate('whoisAsk', 'name email') // Populate user details
+    .populate('agenda', 'AgendaDayDetails'); // Populate agenda details
+
+  res.status(200).send(populatedQuestions);
 };
 
 module.exports = {
